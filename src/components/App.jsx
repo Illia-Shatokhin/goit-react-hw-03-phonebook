@@ -5,6 +5,10 @@ import { ContactsList } from './contacts-list/ContactsList';
 import { PhonebookForm } from './phonebook-form/PhonebookForm';
 import { LabelInput } from './label-input/LabelInput';
 import { NoContactsMessage } from './noContactsMessage/noContactsMessage';
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from './../services/localStorage';
 
 export class App extends Component {
   state = {
@@ -12,38 +16,13 @@ export class App extends Component {
     filter: '',
   };
 
-  saveToLocalStorage = (key, value) => {
-    try {
-      const serializedState = JSON.stringify(value);
-      localStorage.setItem(key, serializedState);
-    } catch (error) {
-      console.error('Set state error: ', error.message);
-    }
-  };
-
-  loadFromLocalStorage = key => {
-    try {
-      const serializedState = localStorage.getItem(key);
-      return serializedState === null
-        ? [
-            { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-            { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-            { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-            { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-          ]
-        : JSON.parse(serializedState);
-    } catch (error) {
-      console.error('Get state error: ', error.message);
-    }
-  };
-
   componentDidMount() {
-    const contactsFromLocalStorage = this.loadFromLocalStorage('contacts');
+    const contactsFromLocalStorage = loadFromLocalStorage('contacts');
     this.setState({ contacts: contactsFromLocalStorage, filter: '' });
   }
 
   componentDidUpdate() {
-    this.saveToLocalStorage('contacts', this.state.contacts);
+    saveToLocalStorage('contacts', this.state.contacts);
   }
 
   filterContacts() {
